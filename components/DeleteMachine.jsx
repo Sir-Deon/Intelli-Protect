@@ -3,9 +3,8 @@ import { View, Text, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Deleter from "./Deleter";
 
-export default function DeleteMachine({ data }) {
+export default function DeleteMachine({ data, setMachines }) {
   const [modalVisible, setModalVisible] = useState(false);
-
   return (
     <View>
       <TouchableOpacity
@@ -27,6 +26,8 @@ export default function DeleteMachine({ data }) {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         data={data}
+        setMachines={setMachines}
+        action={"machine"}
       />
     </View>
   );

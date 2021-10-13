@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { AuthContext } from "../context";
 const menu = [
   {
     icon: "pencil",
@@ -14,6 +15,7 @@ const menu = [
   },
   {
     icon: "sign-out",
+    action: "logout",
     title: "Logout",
   },
   {
@@ -56,6 +58,7 @@ export default function Profile({ navigation }) {
             icon={item.icon}
             text={item.title}
             route={item.route}
+            action={item.action}
             navigation={navigation}
           />
         ))}
@@ -64,7 +67,9 @@ export default function Profile({ navigation }) {
   );
 }
 
-const ProfileItem = ({ icon, text, route, navigation }) => {
+const ProfileItem = ({ icon, text, route, navigation, action }) => {
+  const { logOut } = useContext(AuthContext);
+
   const router = () => {
     if (route) {
       navigation.navigate(route);
@@ -72,7 +77,7 @@ const ProfileItem = ({ icon, text, route, navigation }) => {
   };
   return (
     <TouchableOpacity
-      onPress={router}
+      onPress={action === "logout" ? logOut : router}
       style={{
         padding: 10,
         borderBottomColor: "#ccc",

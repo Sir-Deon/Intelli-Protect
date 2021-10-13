@@ -3,9 +3,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import AuthStackScreen from "./routes/AuthStack";
 import TabScreen from "./routes/Tabs";
 import Splash from "./screens/Splash";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { ThemeProvider } from "react-native-elements";
 import { Provider as PaperProvider } from "react-native-paper";
+import { AuthContext } from "./context";
+import { sign_up, log_out, log_In } from "./config/controller";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const RootStack = createStackNavigator();
 
 const RootStackScreen = ({ userToken }) => (
@@ -27,23 +31,55 @@ const RootStackScreen = ({ userToken }) => (
 );
 
 export default function App() {
-  const [userToken, setUserToken] = useState("efskjgd");
+  const [userToken, setUserToken] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000);
+    (async () => {
+      let token = await AsyncStorage.getItem("userToken");
+      if (token) {
+        setUserToken(token);
+        setIsLoading(false);
+      } else {
+        setUserToken(null);
+        setIsLoading(false);
+      }
+    })();
+  }, []);
+
+  const authContext = useMemo(() => {
+    return {
+      signUp: async user => {
+        let result = await sign_up(user);
+        if (result.success) {
+          setUserToken(result.token);
+        }
+        return result;
+      },
+      login: async user => {
+        let result = await log_In(user);
+        if (result.success) {
+          setUserToken(result.token);
+        }
+        return result;
+      },
+      logOut: async () => {
+        await log_out();
+        setUserToken("");
+      },
+    };
   }, []);
   if (isLoading) {
     return <Splash />;
   }
   return (
-    <ThemeProvider>
-      <PaperProvider>
-        <NavigationContainer>
-          <RootStackScreen userToken={userToken} />
-        </NavigationContainer>
-      </PaperProvider>
-    </ThemeProvider>
+    <AuthContext.Provider value={authContext}>
+      <ThemeProvider>
+        <PaperProvider>
+          <NavigationContainer>
+            <RootStackScreen userToken={userToken} />
+          </NavigationContainer>
+        </PaperProvider>
+      </ThemeProvider>
+    </AuthContext.Provider>
   );
 }

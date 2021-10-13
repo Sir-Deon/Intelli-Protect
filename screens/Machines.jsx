@@ -7,32 +7,68 @@ import Empty from "../components/Empty";
 import MachineItem from "../components/MachineItem";
 import { SwipeListView } from "react-native-swipe-list-view";
 import DeleteMachine from "../components/DeleteMachine";
-const sites = ["youtube.com ", "remove.bg ", "youtube.com "];
+import { registerComputer, getComputers } from "../config/controller";
+import { LinearProgress } from "react-native-elements";
 
 export default function Machines() {
-  const [machines, setMachines] = useState(sites);
+  const [machines, setMachines] = useState([]);
   const [addMachine, setAddMachine] = useState(false);
+  const [loading, setLoading] = useState(false); // Get the welcome.png belonging to current user);
+
+  useEffect(() => {
+    (async () => {
+      setLoading(true);
+      let result = await getComputers();
+      setMachines(result);
+      setLoading(false);
+    })();
+  }, []);
+
+  if (!loading && machines.length <= 0) {
+    return (
+      <>
+        <Empty
+          text=" No registered computer!!"
+          image={require("../assets/empty.png")}
+        />
+        <FAB
+          style={styles.fab}
+          color="white"
+          visible={true}
+          icon="plus"
+          onPress={() => setAddMachine(true)}
+        />
+        <AddMachine
+          addMachine={addMachine}
+          setAddMachine={setAddMachine}
+          setMachines={setMachines}
+        />
+      </>
+    );
+  }
 
   return (
     <>
-      {machines.length > 0 ? (
+      {machines.length > 0 && (
         <SwipeListView
           showsVerticalScrollIndicator={false}
           style={{ padding: 10 }}
           keyExtractor={(item, index) => `${index}`}
           data={machines}
-          renderItem={data => <MachineItem name={data.item} />}
-          renderHiddenItem={data => <DeleteMachine data={data.item} />}
+          renderItem={data => (
+            <MachineItem
+              name={data.item.name}
+              code={data.item.code}
+              setMachines={setMachines}
+            />
+          )}
+          renderHiddenItem={data => (
+            <DeleteMachine data={data.item} setMachines={setMachines} />
+          )}
           leftOpenValue={0}
           rightOpenValue={-70}
         />
-      ) : (
-        <Empty
-          text=" No registered computer!!"
-          image={require("../assets/empty.png")}
-        />
       )}
-
       <FAB
         style={styles.fab}
         color="white"
@@ -40,16 +76,31 @@ export default function Machines() {
         icon="plus"
         onPress={() => setAddMachine(true)}
       />
-      <AddMachine addMachine={addMachine} setAddMachine={setAddMachine} />
+      {loading && (
+        <View style={{ flex: 1 }}>
+          <View style={{ flexGrow: 1 }}></View>
+          <Text style={{ textAlign: "center", marginTop: -200 }}>
+            Loading...
+          </Text>
+          <LinearProgress color="#0b406d" style={{ marginTop: 100 }} />
+        </View>
+      )}
+
+      <AddMachine
+        addMachine={addMachine}
+        setAddMachine={setAddMachine}
+        setMachines={setMachines}
+      />
     </>
   );
 }
 
-const AddMachine = ({ addMachine, setAddMachine }) => {
+const AddMachine = ({ addMachine, setAddMachine, setMachines }) => {
   const [hasPermission, setHaspermission] = useState(false);
   const [name, setName] = useState("");
   const [scanned, setScanned] = useState(false);
   const [text, setText] = useState("Not yet scanned");
+  const [loading, setLoading] = useState(false); // Get the welcome.png belonging to current user);
 
   const askForCameraPermission = () => {
     (async () => {
@@ -57,9 +108,22 @@ const AddMachine = ({ addMachine, setAddMachine }) => {
       setHaspermission(status == "granted");
     })();
   };
-  const submit = () => {
-    let computer = { id: text, name: name };
-    console.log(computer);
+  const submit = async () => {
+    setLoading(true);
+    let result = await registerComputer({ code: text, name: name });
+    if (result.success) {
+      let result = await getComputers();
+      setMachines(result);
+      alert("Operation was successfull !!");
+      setAddMachine(false);
+      setLoading(false);
+      setScanned(false);
+      setText("");
+      setName("");
+    } else {
+      setLoading(false);
+      alert(result.msg);
+    }
   };
   // ask Camera permission
   useEffect(() => {
@@ -68,9 +132,11 @@ const AddMachine = ({ addMachine, setAddMachine }) => {
 
   // Scann code
   const handleBarcodeScanned = ({ type, data }) => {
-    setScanned(true);
-    setText(data);
-    console.log("Type: " + type + "\ndata: " + data);
+    if (data.includes("intelli")) {
+      setScanned(true);
+      setText(data);
+      console.log("Type: " + type + "\ndata: " + data);
+    }
   };
 
   return (
@@ -148,6 +214,9 @@ const AddMachine = ({ addMachine, setAddMachine }) => {
               <Text>Cancel</Text>
             </TouchableOpacity>
           </View>
+          {loading && (
+            <LinearProgress color="#0b406d" style={{ marginTop: 100 }} />
+          )}
         </View>
       ) : (
         <View

@@ -1,8 +1,17 @@
-import React, { useState } from "react";
-import { View, Text, TouchableOpacity, TextInput, Modal } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Modal,
+  Keyboard,
+} from "react-native";
+import LinearProgress from "react-native-elements/dist/linearProgress/LinearProgress";
 import Icon from "react-native-vector-icons/FontAwesome";
+import { editComputer, getComputers } from "../config/controller";
 
-export default function MachineItem({ name }) {
+export default function MachineItem({ name, code, setMachines }) {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View
@@ -24,15 +33,58 @@ export default function MachineItem({ name }) {
       </View>
       <Edit
         name={name}
+        code={code}
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
+        setMachines={setMachines}
       />
     </View>
   );
 }
 
-const Edit = ({ name, modalVisible, setModalVisible }) => {
+const Edit = ({ name, modalVisible, setModalVisible, code, setMachines }) => {
   const [editedName, setEditedName] = useState(name);
+  const [loading, setLoading] = useState(false); // Get the welcome.png belonging to current user);
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const edit = async () => {
+    setLoading(true);
+    let computer = {
+      name: editedName,
+      id: code,
+    };
+    let result = await editComputer(computer);
+    if (result.success) {
+      let result = await getComputers();
+      setMachines(result);
+      setModalVisible(false);
+      alert("Operation was successfull !!");
+      setLoading(false);
+    } else {
+      setLoading(false);
+      alert(result.msg);
+    }
+  };
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        setKeyboardVisible(true); // or some other action
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        setKeyboardVisible(false); // or some other action
+      }
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
   return (
     <Modal visible={modalVisible} animationType="slide" transparent={true}>
       <View
@@ -40,7 +92,7 @@ const Edit = ({ name, modalVisible, setModalVisible }) => {
           backgroundColor: "white",
           width: "100%",
           height: 500,
-          marginTop: 500,
+          marginTop: isKeyboardVisible ? 50 : 500,
           borderTopRightRadius: 20,
           borderTopLeftRadius: 20,
           padding: 20,
@@ -65,6 +117,7 @@ const Edit = ({ name, modalVisible, setModalVisible }) => {
           />
         </View>
         <TouchableOpacity
+          onPress={edit}
           style={{
             backgroundColor: "orange",
             width: "60%",
@@ -90,6 +143,9 @@ const Edit = ({ name, modalVisible, setModalVisible }) => {
         >
           <Text>Cancel</Text>
         </TouchableOpacity>
+        {loading && (
+          <LinearProgress color="#0b406d" style={{ marginTop: 70 }} />
+        )}
       </View>
     </Modal>
   );

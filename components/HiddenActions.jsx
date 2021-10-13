@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Deleter from "./Deleter";
 
-const HiddenActions = ({ data }) => {
+const HiddenActions = ({ data, setWebsites }) => {
   const [modalVisible, setModalVisible] = useState(false);
   return (
     <View>
@@ -27,6 +27,8 @@ const HiddenActions = ({ data }) => {
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         data={data}
+        setWebsites={setWebsites}
+        action={"site"}
       />
     </View>
   );

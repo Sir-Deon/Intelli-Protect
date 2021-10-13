@@ -1,7 +1,46 @@
 import React, { useState } from "react";
 import { View, Text, Modal, TouchableOpacity } from "react-native";
+import {
+  deleteComputer,
+  deleteSite,
+  getComputers,
+  getSites,
+} from "../config/controller";
+import { LinearProgress } from "react-native-elements";
 
-export default function Deleter({ modalVisible, setModalVisible }) {
+export default function Deleter({
+  modalVisible,
+  setModalVisible,
+  data,
+  setMachines,
+  setWebsites,
+  action,
+}) {
+  const [loading, setLoading] = useState(false); // Get the welcome.png belonging to current user);
+
+  const delete_PC = async () => {
+    setLoading(true);
+    if (action === "machine") {
+      let result = await deleteComputer(data.code);
+      if (result.success) {
+        let result = await getComputers();
+        setMachines(result);
+        setLoading(false);
+        setModalVisible(false);
+        alert("Operation was successfull !!");
+      }
+    }
+    if (action === "site") {
+      let result = await deleteSite(data.id);
+      if (result.success) {
+        let result = await getSites();
+        setWebsites(result);
+        setLoading(false);
+        setModalVisible(false);
+        alert("Operation was successfull !!");
+      }
+    }
+  };
   return (
     <Modal visible={modalVisible} animationType="slide" transparent={true}>
       <View
@@ -20,6 +59,7 @@ export default function Deleter({ modalVisible, setModalVisible }) {
           Are you sure you want to delete !!
         </Text>
         <TouchableOpacity
+          onPress={delete_PC}
           style={{
             backgroundColor: "orange",
             width: "80%",
@@ -45,6 +85,9 @@ export default function Deleter({ modalVisible, setModalVisible }) {
         >
           <Text>Cancel</Text>
         </TouchableOpacity>
+        {loading && (
+          <LinearProgress color="#0b406d" style={{ marginTop: 20 }} />
+        )}
       </View>
     </Modal>
   );
