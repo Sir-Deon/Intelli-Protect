@@ -2,7 +2,7 @@ import { FAB } from "react-native-paper";
 import React, { useState } from "react";
 import { StyleSheet } from "react-native";
 import Deleter from "./Deleter";
-const Fab = ({ setModalVisible }) => {
+const Fab = ({ setModalVisible, setWebsites }) => {
   const [state, setState] = useState({ open: false });
   const [modalDeleteVisible, setModalDeleteVisible] = useState(false);
   const onStateChange = ({ open }) => setState({ open });
@@ -40,6 +40,8 @@ const Fab = ({ setModalVisible }) => {
         }}
       />
       <Deleter
+        deleteAll={true}
+        setWebsites={setWebsites}
         modalVisible={modalDeleteVisible}
         setModalVisible={setModalDeleteVisible}
       />

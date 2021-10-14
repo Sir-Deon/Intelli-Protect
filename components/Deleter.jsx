@@ -3,6 +3,7 @@ import { View, Text, Modal, TouchableOpacity } from "react-native";
 import {
   deleteComputer,
   deleteSite,
+  del_All,
   getComputers,
   getSites,
 } from "../config/controller";
@@ -15,6 +16,7 @@ export default function Deleter({
   setMachines,
   setWebsites,
   action,
+  deleteAll,
 }) {
   const [loading, setLoading] = useState(false); // Get the welcome.png belonging to current user);
 
@@ -41,6 +43,17 @@ export default function Deleter({
       }
     }
   };
+  const delete_all = async () => {
+    setLoading(true);
+    let result = await del_All();
+    if (result.success) {
+      let result = await getSites();
+      setWebsites(result);
+      setLoading(false);
+      setModalVisible(false);
+      alert("Operation was successfull !!");
+    }
+  };
   return (
     <Modal visible={modalVisible} animationType="slide" transparent={true}>
       <View
@@ -59,7 +72,7 @@ export default function Deleter({
           Are you sure you want to delete !!
         </Text>
         <TouchableOpacity
-          onPress={delete_PC}
+          onPress={deleteAll ? delete_all : delete_PC}
           style={{
             backgroundColor: "orange",
             width: "80%",

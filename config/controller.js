@@ -46,6 +46,12 @@ export const editProfile = async ({ email, password }) => {
   let result = await axios.put("/edit_profile", user);
   return result.data;
 };
+
+export const del_All = async () => {
+  let userId = await AsyncStorage.getItem("userId");
+  let result = await axios.delete(`/delete_all/${userId}`);
+  return result.data;
+};
 export const registerComputer = async computer => {
   let id = await AsyncStorage.getItem("userId");
   let pc = {

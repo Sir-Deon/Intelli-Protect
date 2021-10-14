@@ -31,7 +31,7 @@ export default function Sites({ navigation }) {
           text="No website to show !!"
           image={require("../assets/no-data.png")}
         />
-        <Fab setModalVisible={setModalVisible} />
+        <Fab setWebsites={setWebsites} setModalVisible={setModalVisible} />
 
         <AddWebsites
           modalVisible={modalVisible}
@@ -66,7 +66,7 @@ export default function Sites({ navigation }) {
           rightOpenValue={-70}
         />
       )}
-      <Fab setModalVisible={setModalVisible} />
+      <Fab setModalVisible={setModalVisible} setWebsites={setWebsites} />
       {loading && (
         <View style={{ flex: 1 }}>
           <View style={{ flexGrow: 1 }}></View>
@@ -90,7 +90,6 @@ const AddWebsites = ({ modalVisible, setModalVisible, setWebsites }) => {
   const [isSwitchOn, setIsSwitchOn] = useState(true);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
   const [loading, setLoading] = useState(false);
-  const [checked, setChecked] = useState(false);
   const [siteName, setSiteName] = useState("");
   const block = async () => {
     setLoading(true);
