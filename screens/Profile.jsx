@@ -1,4 +1,5 @@
-import React, { useContext } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import React, { useContext, useEffect, useState } from "react";
 import { View, Text, TouchableOpacity } from "react-native";
 import { Avatar } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -26,6 +27,14 @@ const menu = [
 ];
 
 export default function Profile({ navigation }) {
+  const [email, setEmail] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      let email = await AsyncStorage.getItem("email");
+      setEmail(email);
+    })();
+  }, []);
   return (
     <View
       style={{
@@ -39,7 +48,7 @@ export default function Profile({ navigation }) {
         icon="account"
         style={{ backgroundColor: "#0b406d", marginTop: 20 }}
       />
-      <Text>User@me.com</Text>
+      <Text>{email}</Text>
       <View
         style={{
           flex: 1,

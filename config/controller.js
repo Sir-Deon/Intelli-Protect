@@ -10,6 +10,7 @@ export const sign_up = async user => {
     if (userData.data.success) {
       await AsyncStorage.setItem("userToken", userData.data.token);
       await AsyncStorage.setItem("userId", userData.data.id);
+      await AsyncStorage.setItem("email", userData.data.email);
     }
     return userData.data;
   } catch (error) {
@@ -23,6 +24,7 @@ export const log_In = async user => {
     if (userData.data.success) {
       await AsyncStorage.setItem("userToken", userData.data.token);
       await AsyncStorage.setItem("userId", userData.data.id);
+      await AsyncStorage.setItem("email", userData.data.email);
     }
     return userData.data;
   } catch (error) {
@@ -34,7 +36,16 @@ export const log_out = async () => {
   await AsyncStorage.removeItem("userToken");
   await AsyncStorage.removeItem("userId");
 };
-
+export const editProfile = async ({ email, password }) => {
+  let userId = await AsyncStorage.getItem("userId");
+  let user = {
+    id: userId,
+    email: email,
+    password: password,
+  };
+  let result = await axios.put("/edit_profile", user);
+  return result.data;
+};
 export const registerComputer = async computer => {
   let id = await AsyncStorage.getItem("userId");
   let pc = {

@@ -10,25 +10,12 @@ export default function About() {
       }}
     >
       <Text style={{ fontWeight: "bold", fontSize: 25 }}>Intelli Protect</Text>
+      <Text></Text>
       <Text>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, sint.
-        Porro libero ipsam soluta laudantium maxime, error eos quibusdam ratione
-        delectus nobis, quidem illum rem quasi excepturi consequatur iste!
-        Laboriosam! Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        Ducimus, sint. Porro libero ipsam soluta laudantium maxime, error eos
-        quibusdam ratione delectus nobis, quidem illum rem quasi excepturi
-        consequatur iste! Laboriosam!
+        Intelli Protect was conceived is a tool which helps system admins
+        control content consumed by others.This project was conceived by Eng
+        Denzel and Eng Deon Achuo built the entire system.
       </Text>
-      <Text>
-        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ducimus, sint.
-        Porro libero ipsam soluta laudantium maxime, error eos quibusdam ratione
-        delectus nobis, quidem illum rem quasi excepturi consequatur iste!
-        Laboriosam! Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-        Ducimus, sint. Porro libero ipsam soluta laudantium maxime, error eos
-        quibusdam ratione delectus nobis, quidem illum rem quasi excepturi
-        consequatur iste! Laboriosam!
-      </Text>
-      <Contact />
     </View>
   );
 }
