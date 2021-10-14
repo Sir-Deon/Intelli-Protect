@@ -11,6 +11,11 @@ const menu = [
     route: "Edit Profile",
   },
   {
+    icon: "question",
+    title: "Help",
+    route: "Help",
+  },
+  {
     icon: "star",
     title: "Rate this app",
   },

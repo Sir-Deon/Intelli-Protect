@@ -6,6 +6,7 @@ import {
 import Profile from "../screens/Profile";
 import EditProfile from "../screens/EditProfile";
 import About from "../screens/About";
+import Help from "../screens/Help";
 
 const ProfileStack = createStackNavigator();
 
@@ -42,6 +43,15 @@ const ProfileStackScreen = () => (
       }}
       name="About"
       component={About}
+    />
+    <ProfileStack.Screen
+      options={{
+        headerTitleStyle: {
+          color: "#0b406d",
+        },
+      }}
+      name="Help"
+      component={Help}
     />
   </ProfileStack.Navigator>
 );
