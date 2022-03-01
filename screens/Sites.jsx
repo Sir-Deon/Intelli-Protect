@@ -95,6 +95,7 @@ const AddWebsites = ({ modalVisible, setModalVisible, setWebsites }) => {
     setLoading(true);
     let site = { name: siteName, blocked: isSwitchOn };
     let result = await blockSite(site);
+
     if (result.success) {
       setLoading(false);
       let result = await getSites();

@@ -1,7 +1,8 @@
 {
   "expo": {
-    "name": "intelli-protect",
+    "name": "Intelli Protect",
     "slug": "intelli-protect",
+    "description": "This is the control app for intelli protect system.",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -17,13 +18,15 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.deonachuo.intelliprotect"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.deonachuo.intelliprotect"
     },
     "web": {
       "favicon": "./assets/favicon.png"

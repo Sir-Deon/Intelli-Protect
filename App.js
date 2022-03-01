@@ -32,16 +32,14 @@ const RootStackScreen = ({ userToken }) => (
 
 export default function App() {
   const [userToken, setUserToken] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
+
   useEffect(() => {
     (async () => {
       let token = await AsyncStorage.getItem("userToken");
       if (token) {
         setUserToken(token);
-        setIsLoading(false);
       } else {
         setUserToken(null);
-        setIsLoading(false);
       }
     })();
   }, []);
@@ -68,9 +66,7 @@ export default function App() {
       },
     };
   }, []);
-  if (isLoading) {
-    return <Splash />;
-  }
+
   return (
     <AuthContext.Provider value={authContext}>
       <ThemeProvider>
